@@ -49,7 +49,7 @@ Info: https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 
 ### Aperturas
 
-Mirar si estamos dentro de la teoría una apertura e ir calculando para nuestra BDD como castigar mejor cada movimiento o desviación del oponente.
+Mirar si estamos dentro de la teoría una apertura e ir calculando para nuestra BDD (o tabla de transposiciones) como castigar mejor cada movimiento o desviación del oponente.
 
 
 
