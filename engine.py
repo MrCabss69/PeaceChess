@@ -1,39 +1,41 @@
 import chess 
 import random
 from stockfish import Stockfish
-from nodo import Nodo
 
 class Engine():
 
     def __init__(self) -> None:
         self.eng = Stockfish()
-        self.nodos_terminales = {}
+        self.ter = {}
         self.posCont = 0
 
     # get_random_board -> devuelve una posición aleatoria de un tablero de ajedrez
-    def get_random_board(self):
-        n_moves = random.randint(100, 125)
+    def get_random_board(self,n_moves=None):
+        if n_moves == None:
+            n_moves = random.randint(100, 125)
         board = chess.Board()
         while n_moves > 0 and not board.is_game_over():
             choosen = random.choice(list(board.legal_moves))
             board.push(choosen)
+            if not board.is_valid():
+                board.pop()
             n_moves -= 1
         return board
 
-    def stockfish_value(self, n):
+    def stockfish_value(self, board):
 
-        self.eng.set_fen_position(n.fen)
+        self.eng.set_fen_position(board.fen())
         eval   = self.eng.get_evaluation()
         best_m = self.eng.get_best_move()
 
-        if n.terminal and n.fen not in self.nodos:
-            self.nodos_terminales[n.fen] = eval
+        if board.is_game_over() and board.fen() not in self.ter:
+            self.ter[board.fen()] = eval
 
         if eval["type"] == "cp":
             return best_m, eval['value']/100
 
         elif eval["type"] == "mate":
-            return best_m, eval['value']*100
+            return best_m, 100_000 if eval['value'] > 0 else best_m, -100_000
 
 
     def get_material_v(self, board):
@@ -49,36 +51,42 @@ class Engine():
         return v 
 
 
-    def heuristic_value(self, n):
-
-        if n.terminal:
-            res = n.board.outcome().result()
+    def heuristic_value(self, board):
+        # el tablero ya es terminal
+        if board.is_game_over():
+            res = board.outcome().result()
             if '/' in res:
                 return 0
             else:
                 return 100_000 if res[0] == '1' else -100_000
-
         # evaluación heurística de material
-        return self.get_material_v(n.board)
+        else:
+            return self.get_material_v(board)
 
-    
-    
+    def get_childs(self,board):
+        hijos  = []
+        for m in board.legal_moves:
+            board.push(m)
+            hijos.append(board.fen())
+            board.pop()
+        return hijos
+
     # alfa-beta prunning + memoization - LONG + FAST VERSION
-    def minimax_ab(self, node, depth, maximize, alfa, beta):
+    def minimax_ab(self, board, depth, maximize, alfa, beta):
         self.posCont += 1
         # check terminal o maxima alcanzada del minimax por ahora
-        if node.terminal or depth == 0 or node.fen in self.nodos_terminales.keys():
+        if board.is_game_over() or depth == 0 or board.fen in self.ter.keys():
             
-            if node.fen not in self.nodos_terminales.keys():
-                self.nodos_terminales[node.fen] = self.heuristic_value(node)
+            if board.fen() not in self.ter.keys():
+                self.ter[board.fen()] = self.heuristic_value(board)
                 # self.nodos[node.fen] = self.stockfish_value(node)[1]
-            return self.nodos_terminales[node.fen]
+            return self.ter[board.fen()]
             
         elif maximize:
             # estamos maximizando - actualizamos alfa
             act = -100_000
-            for f in node.childs:
-                hijo = Nodo(chess.Board(f))
+            for f in self.get_childs(board):
+                hijo = chess.Board(f)
                 act  = max(act, self.minimax_ab(hijo, depth-1, False, alfa, beta))
                 # cortamos cuando nuestro valor a_maximizar, sea mayor que el del minimizador - él siempre escogera este
                 if act >= beta:
@@ -88,8 +96,8 @@ class Engine():
         else:
             # estamos minimizando - actualizamos alfa
             act = 100_000
-            for f in node.childs:
-                hijo = Nodo(chess.Board(f))
+            for f in self.get_childs(board):
+                hijo = chess.Board(f)
                 act = min(act, self.minimax_ab(hijo, depth-1, True, alfa, beta))
                 if act <= alfa:
                     break
@@ -97,32 +105,25 @@ class Engine():
             return act
 
 
-
-    def get_move(self, board, depth=2,limit=None):
-
-        self.posCont = 0
-
-        # creamos el objeto tipo nodo con el board actual
-        nodo = Nodo(board)
-        move = None
+    def get_move(self, board, depth=3,limit=None):
          
-        """
-        print('Es el turno de:', ['Negras','Blancas'][maximize])
-        print('El valor heurístico del nodo actual es: ', heuristic_value(nodo))
-        print('Valor de stockfish calculado para el nodo: ', stockfish_value(nodo))
-        """
+        # TODO: IMPLEMENTAR estructura <GAMETREE> (para memoization) - almacenar los nodos recorridos y sus valores
+        #   - ir recalculando recursivamente las últimas hojas candidatas según aumentemos la profundidad
 
-        # A IMPLEMENTAR: GAMETREE CON memoization - almacenar los nodos recorridos en el mapa
-
-        # recorremos los hijos del nodo actual
         maximize   = bool(board.turn)
         comparator = " < " if maximize else  " > " 
-        v   = -100_000 if maximize else 100_000
-        for m in nodo.child_moves:
+
+        best_move  = None
+        best_val   = -100_000 if maximize else 100_000
+
+        # recorremos los hijos del nodo actual
+        for m in board.legal_moves:
             board.push(m)
-            mmval = self.minimax_ab(Nodo(board), depth, not maximize, -100_000, 100_000)
-            if eval(str(v)+comparator+str(mmval)) == True:
-                v = mmval
-                move = m
+            mmval = self.minimax_ab(board, depth, not maximize, -100_000, 100_000)
+            # si es un nodo mejor que el actual
+            if eval(str(best_val)+comparator+str(mmval)) == True:
+                best_val, best_move = mmval, m
             board.pop()
-        return move, v # if move != None else random.choice(list(board.legal_moves))
+
+        print(best_move)
+        return best_move, best_val# if move != None else random.choice(list(board.legal_moves))

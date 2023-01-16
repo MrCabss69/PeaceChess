@@ -3,7 +3,6 @@ import os
 import time
 import chess
 from engine import Engine
-from nodo import Nodo
 
 
 if __name__ == "__main__":
@@ -22,11 +21,13 @@ if __name__ == "__main__":
 
         elif cmd[0] == "go":
             t, e  = time.time(), Engine()
-            move  = e.get_move(board)
+            move,val  = e.get_move(board)
             try:
+                print('\n',val,'\n')
                 board.push(move)
             except:
                 try:
+                    print('\n',val,'\n')
                     board.push(chess.Move.from_uci(move))
                 except:
                     print('Try again')
@@ -44,7 +45,7 @@ if __name__ == "__main__":
 
         elif cmd[0] == 'eval':
             e = Engine()
-            print('Stockfish_val:', e.stockfish_value(Nodo(board)))
+            print('Stockfish_val:', e.stockfish_value(board))
             # print(heuristic_value(Nodo(board)))
         
         elif cmd[0] == 'clear':

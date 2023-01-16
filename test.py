@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 # IMPORTS
-from nodo import Nodo
 from engine import Engine
 import pandas as pd
 import copy
@@ -22,10 +21,10 @@ def get_openings():
 engine = Engine()
 nodos_terminales, posCont, v = {}, 0, -1 
 while abs(v) != 100_000: 
-    rand_board = engine.get_random_board()
-    while rand_board.outcome() != None or not rand_board.is_valid():
-        rand_board = engine.get_random_board()
-    m, v   = engine.get_move(rand_board,2)
+    rand_board = engine.get_random_board(100)
+    while rand_board.outcome() != None:
+        rand_board = engine.get_random_board(150)
+    m, v  = engine.get_move(rand_board,1)
     if abs(v) == 100_000:
         post_board = copy.deepcopy(rand_board)
         post_board.push(m)
