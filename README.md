@@ -67,12 +67,10 @@ Cuando estamos realizando una trayectoria del árbol, el nodo hijo que retorna e
 <img src="https://latex.codecogs.com/gif.latex?S_i=x_i+C*sqrt(ln(t)/n_i)" /> 
 
 Donde:
-
-<img src="https://latex.codecogs.com/gif.latex?" /> 
-            s_i = Value of a node
-            x_i = Empirical mean value of a node
-            C = Constant mean value of a node
-            t = Number of simulation mean value of a node
+                  s_i = Value of a node
+                  x_i = Empirical mean value of a node
+                  C = Constant mean value of a node
+                  t = Number of simulation mean value of a node
 
 
 
