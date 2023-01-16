@@ -37,15 +37,16 @@ https://en.wikipedia.org/wiki/Zobrist_hashing
 
 ** Añadir como variables o capas: casillas controladas[movimientos legales], casillas abiertas del rey, peones conectados, estructuras de peones,  posibilidad de enroque, jaques, capturas, amenazas y desventaja de material
 
-- utilizar como parámetros el ELO de los oponentes. Se puede elegir un modelo distinto en base al elo estimado del oponente.
 
-- debemos generar datos filtrados y normalizados, trabajados en un formato adecuado para el modelo.
+- Generar datos filtrados y normalizadoa con su valor real correspondiente. Datos trabajados en un formato adecuado para el modelo.
 
-- debemos separar los datos en conjunto de entrenamiento, conjunto de prueba, y conjunto de validación.
+- Separar los datos en conjunto de entrenamiento, conjunto de prueba, y conjunto de validación.
 
-- El objetivo del modelo será evaluar númericamente una posición. ( -inf , inf ) En el fondo lo que estamos construyendo es una función heurística de precisión sobre la que aplicar el minimax.
+- El objetivo será evaluar númericamente una posición. ( -inf , inf ) En el fondo lo que estamos construyendo es una función heurística de precisión sobre la que aplicar el minimax.
 
-- ¿Qué formato tendrán nuestros datos? Cada input de entrada será un array n-dimensional (¿habrá que aplanarlo?), donde estén reflejados los datos todas las capas. Este array representará una posición válida o terminal de una partida de ajedrez en. Cada fila o capa podrá tener un tamaño diferente, siendo el tamaño último (X,8,8),
+- A futuro: utilizar como parámetros el ELO de los oponentes. Se puede elegir un modelo distinto en base al elo estimado del oponente.
+
+- Formato para nuestros datos: cada input de entrada será un array n-dimensional (¿habrá que aplanarlo?). En este array estarám reflejados por capas todos los datos que describan de la forma más exhaustiva posible la situación actual. Dicho array representará una posición válida o terminal. Cada fila o capa podrá tener un tamaño diferente, siendo el tamaño último (X,8,8),
 
 --------------
 
@@ -58,12 +59,25 @@ La idea de este algoritmo es ir explorando poco a poco el árbol empezando por l
 
 En cada iteración se expanden las hojas, y se recalcula el valor de los nodos precendentes o parentales a las hojas simuladas.
 
-***Selection***: s_i = x_i + C*sqrt(ln(t)/n_i)
+***Selection***: 
+\documentclass{article}
+\usepackage{markdown}
+\begin{document}
+Here are some code fragments indented by at least 4 space characters.
+\vspace{6mm}
+
+\begin{markdown}
+s_i = x_i + C*sqrt(ln(t)/n_i)
 
             - s_i : value of a node
             - x_i: empirical mean value of a node
             - C: constant
             - t: number of simulations
+
+\end{markdown}
+\end{document}
+
+
 
 
 
