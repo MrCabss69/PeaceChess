@@ -60,23 +60,12 @@ La idea de este algoritmo es ir explorando poco a poco el árbol empezando por l
 En cada iteración se expanden las hojas, y se recalcula el valor de los nodos precendentes o parentales a las hojas simuladas.
 
 ***Selection***: 
-\documentclass{article}
-\usepackage{markdown}
-\begin{document}
-Here are some code fragments indented by at least 4 space characters.
-\vspace{6mm}
-
-\begin{markdown}
-<img src="https://latex.codecogs.com/gif.latex?s_i=x_i+C*sqrt(ln(t)/n_i)" /> 
+<img src="https://latex.codecogs.com/gif.latex?S_i=x_i+C*sqrt(ln(t)/n_i)" /> 
 
             - s_i : value of a node
             - x_i: empirical mean value of a node
             - C: constant
             - t: number of simulations
-
-\end{markdown}
-\end{document}
-
 
 
 
