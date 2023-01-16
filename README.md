@@ -25,12 +25,17 @@ Aperturas -> Mirar si estamos dentro de la teoría una apertura e ir calculando 
 
 --------------
 
-
---------------
 # TODO: 
+
 ## Zoobrist Hashing: 
 https://en.wikipedia.org/wiki/Zobrist_hashing
 
+## Tabla de Transposiciones
+Usar el hash zoobrist para almacenar una tabla de transposiciones:
+https://www.chessprogramming.org/Transposition_Table#How_it_works
+
+# Implementación
+la idea (como la mía original sin saber que existía) es usar tablas de posiciones con almacenando las evaluaciones anteriores, la profundidad a la que fueron hechas y las conclusiones de dichas evaluaciones. Lo ideal sería 
 --------------
 
 ## Tensorflow
