@@ -70,13 +70,9 @@ Donde:
 
 <img src="https://latex.codecogs.com/gif.latex?S_i=\text{Value of a node}" /> 
 
-<img src="https://latex.codecogs.com/gif.latex?x_i=\text{Empirical mean value of a node}" />
-
-<img src="https://latex.codecogs.com/gif.latex?C=\text{Constant}" />
-
-<img src="https://latex.codecogs.com/gif.latex?t=\text{Number of sims}" />
-
-
+            x_i = Empirical mean value of a node
+            C = Constant mean value of a node
+            t = Number of simulation mean value of a node
 
 
 
