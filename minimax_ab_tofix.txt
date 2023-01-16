@@ -1,0 +1,54 @@
+""" 
+    # alfa-beta prunning + memoization - SHORT + SLOW VERSION
+    def minimax_ab(self, node, depth, maximize, alfa, beta):
+
+        self.posCont += 1
+
+        # check terminal o maxima alcanzada del minimax por ahora
+        if node.terminal or depth == 0 or node.fen in self.nodos.keys():
+            
+            if node.fen not in self.nodos.keys():
+                self.nodos[node.fen] = self.heuristic_value(node)
+                # self.nodos[node.fen] = self.stockfish_value(node)[1]
+            return self.nodos[node.fen]
+
+        op1, op2    = (alfa, beta) if maximize else (beta, alfa)
+        comparation = operator.ge if maximize else operator.le
+        operation   = max if maximize else min
+        for f in node.childs:
+            hijo = Nodo(chess.Board(f))
+            op1  = operation(op1, self.minimax_ab(hijo, depth-1, not maximize, alfa, beta))
+            # cortamos cuando nuestro valor a_maximizar, sea mayor que el del minimizador o viceversa
+            #       la explicación para justificar la poda es que el rival siempre cogerá el otro camino
+            if comparation(op1,op2) == True:
+                break
+        return op1
+
+    # alfa-beta prunning + memoization - SHORT + FAST
+    def minimax_ab(self, node, depth, maximize, alfa, beta):
+
+        self.posCont += 1
+
+        # check terminal o maxima alcanzada del minimax por ahora
+        if node.terminal or depth == 0:
+            if node.fen not in self.nodos_terminales.keys():
+                self.nodos_terminales[node.fen] = self.heuristic_value(node)
+                # self.nodos[node.fen] = self.stockfish_value(node)[1]
+            return self.nodos_terminales[node.fen]
+        else:
+            actual      = -100_000 if maximize else 100_000
+            op1, op2    = (alfa, beta) if maximize else (beta, alfa)
+            comparation = ' >= ' if maximize else ' <= '
+            operation   = max if maximize else min
+            for f in node.childs:
+                hijo = Nodo(chess.Board(f))
+                actual = operation(actual, self.minimax_ab(hijo, depth-1, not maximize, alfa, beta))
+                # cortamos cuando nuestro valor a_maximizar, sea mayor que el del minimizador o viceversa
+                #       la explicación para justificar la poda es que el rival siempre cogerá el otro camino
+                if eval(str(actual)+comparation+str(op2)) == True:
+                    break
+                op1 = operation(actual,op1)
+            alfa, beta = (op1, op2) if maximize else (op2, op1)
+
+            return actual
+""" 
