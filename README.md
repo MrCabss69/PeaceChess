@@ -65,7 +65,7 @@ Usar el hash zoobrist para almacenar una tabla de transposiciones y optimizar el
 https://www.chessprogramming.org/Transposition_Table#How_it_works
 
 
-# OPTIMIZAR CAPTURAS CON MVL-LVP POLICY
+### OPTIMIZAR CAPTURAS CON MVL-LVP POLICY
 
 Optimizar los nodos hijos que se recorren primero para explorar en el algoritmo alfa-beta => cuanto antes descubramos mejores valores, antes podremos podar grandes porciones del árbol. Política MVL-LVP: Most Valuable Piece - (eaten by) - Less Valuable Piece
 
