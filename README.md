@@ -1,5 +1,5 @@
 # PeaceChess
-A peacefull AI chess engine to learn and find the right pace into the board.
+A peacefull tree-search optimizer chess engine to learn and find the right pace into the board. In the future the evaluation will be calculated via TensorFlow model
 
 
 ## CURRRENTLY WORKING
