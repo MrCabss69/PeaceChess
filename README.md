@@ -2,8 +2,8 @@
 A peacefull AI chess engine to learn and find the right pace into the board.
 
 
-# CURRRENTLY WORKING
-## MINIMAX
+## CURRRENTLY WORKING
+### MINIMAX
 Algoritmo para recorrer estrategias de forma alternativa para ambos escenarios en árboles binarios de decisión. Info: https://en.wikipedia.org/wiki/Minimax
 
     
@@ -20,7 +20,7 @@ Algoritmo para recorrer estrategias de forma alternativa para ambos escenarios e
           actual = min(actual,minimax(child,depth-1))
         return actual
         
-## ALFA BETA PRUNING
+### ALFA BETA PRUNING
             function alphabeta(node, depth, α, β, maximizingPlayer) is
                 if depth = 0 or node is a terminal node then
                     return the heuristic value of node
@@ -45,27 +45,27 @@ Info: https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 
 --------------
 
-# TODO: 
+## TODO: 
 
-## Aperturas
+### Aperturas
 
 Mirar si estamos dentro de la teoría una apertura e ir calculando para nuestra BDD como castigar mejor cada movimiento o desviación del oponente.
 
 
 
-## Zoobrist Hashing: 
+### Zoobrist Hashing: 
 
 https://en.wikipedia.org/wiki/Zobrist_hashing
 
 
 
-## Tabla de Transposiciones
+### Tabla de Transposiciones
 
 Usar el hash zoobrist para almacenar una tabla de transposiciones:
 https://www.chessprogramming.org/Transposition_Table#How_it_works
 
 
-# Implementación
+### Implementación
 La idea (como la mía original sin saber que existía) es usar tablas de posiciones con almacenando las evaluaciones anteriores, la profundidad a la que fueron hechas y las conclusiones de dichas evaluaciones. Lo ideal sería setear unos recursos límites de tiempo por llamada al mimimax, y cuando se ejecute el algoritmo sobre nodos ya conocidos, usar los recursos para ampliar el árbol por esas ramas.
 
 --------------
