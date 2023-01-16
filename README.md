@@ -59,18 +59,20 @@ La idea de este algoritmo es ir explorando poco a poco el árbol empezando por l
 
 En cada iteración se expanden las hojas, y se recalcula el valor de los nodos precendentes o parentales a las hojas simuladas.
 
-***Selection***: 
-<img src="https://latex.codecogs.com/gif.latex?S_i=x_i+C*sqrt(ln(t)/n_i)" /> 
-
-            - s_i : value of a node
-            - x_i: empirical mean value of a node
-            - C: constant
-            - t: number of simulations
-
-
-
+***Selection***
 
 Cuando estamos realizando una trayectoria del árbol, el nodo hijo que retorna el mayor valor de la ecuación será el seleccionado. Durante un recorrido transversal del árbol una vez se encuentre un nodo hoja se pasa a la fase de expansión.
+
+
+<img src="https://latex.codecogs.com/gif.latex?S_i=x_i+C*sqrt(ln(t)/n_i)" /> 
+
+            <img src="https://latex.codecogs.com/gif.latex?S_i=\text=value of a node" /> 
+            <img src="https://latex.codecogs.com/gif.latex?x_i=\text=empirical mean value of a node" />
+            <img src="https://latex.codecogs.com/gif.latex?C=\text=constat" />
+            <img src="https://latex.codecogs.com/gif.latex?t=\text=number of sims" />
+
+
+
 
 
 ***Simulación***: se escogen movimientos hasta encontrar un estado terminal o conocido.
