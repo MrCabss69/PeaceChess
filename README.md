@@ -67,7 +67,7 @@ Here are some code fragments indented by at least 4 space characters.
 \vspace{6mm}
 
 \begin{markdown}
-s_i = x_i + C*sqrt(ln(t)/n_i)
+<img src="https://latex.codecogs.com/gif.latex?s_i=x_i+C*sqrt(ln(t)/n_i)" /> 
 
             - s_i : value of a node
             - x_i: empirical mean value of a node
