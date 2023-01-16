@@ -17,7 +17,7 @@ def stockfish_value(n):
         return best_m, eval['value']/100
     elif eval["type"] == "mate":
         return best_m, eval['value']*100
-    
+"""
 def heuristic_value(n):
     global v
     if n.terminal:
@@ -27,7 +27,9 @@ def heuristic_value(n):
         else:
             return float('inf') if res[0] == '1' else float('-inf')
     return sum([v[l] for l in n.board.fen().split(" ")[0] if l in v.keys()])
-
+"""
+def heuristic_value(n):
+    return stockfish_value(n)[1]
 
 def minimax_ab(node, depth, maximize, alfa, beta):
     if node.terminal or depth == 0:
@@ -57,23 +59,22 @@ def get_move(board, limit=None):
     nodo, legals = Nodo(board), list(board.legal_moves)
     maximize     = bool(board.turn)
 
+    """
     print('Es el turno de:', ['Negras','Blancas'][maximize])
     print('El valor heurístico del nodo actual es: ', heuristic_value(nodo))
     print('Valor de stockfish calculado para el nodo: ', stockfish_value(nodo))
+    """
 
     # recorremos una parte de los hijos
     vals       = {}
-    for exp in random.sample(legals, random.randint(1,len(legals)):
+    for exp in random.sample(legals, random.randint(1,len(legals))):
         board.push(exp)
         vals[exp.uci()] = minimax_ab(Nodo(board), 4, maximize, float('-inf'), float('inf'))
         board.pop()
     if maximize:
-        res = max(vals, key=vals.get)
+        return max(vals, key=vals.get)
     else:
-        res = min(vals, key=vals.get)
-    print(res)
-    return res
-
+        return min(vals, key=vals.get)
 
 if __name__ == "__main__":
     board = chess.Board()
@@ -105,7 +106,8 @@ if __name__ == "__main__":
                 print('Wrong move format, try again')
 
         elif cmd[0] == 'eval':
-            print(stockfish_value(Nodo(board)))
+            print('Stockfish_val:',stockfish_value(Nodo(board)))
+            # print(heuristic_value(Nodo(board)))
         
         elif cmd[0] == 'clear':
             os.system('cls' if os.name == 'nt' else 'clear')
