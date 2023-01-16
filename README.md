@@ -21,21 +21,29 @@ Algoritmo para recorrer estrategias de forma alternativa para ambos escenarios e
 
 --------------
 
-Aperturas -> Mirar si estamos dentro de la teoría una apertura e ir calculando para nuestra BDD como castigar mejor cada movimiento o desviación del oponente.
-
---------------
-
 # TODO: 
 
+## Aperturas
+
+Mirar si estamos dentro de la teoría una apertura e ir calculando para nuestra BDD como castigar mejor cada movimiento o desviación del oponente.
+
+
+
 ## Zoobrist Hashing: 
+
 https://en.wikipedia.org/wiki/Zobrist_hashing
 
+
+
 ## Tabla de Transposiciones
+
 Usar el hash zoobrist para almacenar una tabla de transposiciones:
 https://www.chessprogramming.org/Transposition_Table#How_it_works
 
+
 # Implementación
-la idea (como la mía original sin saber que existía) es usar tablas de posiciones con almacenando las evaluaciones anteriores, la profundidad a la que fueron hechas y las conclusiones de dichas evaluaciones. Lo ideal sería 
+La idea (como la mía original sin saber que existía) es usar tablas de posiciones con almacenando las evaluaciones anteriores, la profundidad a la que fueron hechas y las conclusiones de dichas evaluaciones. Lo ideal sería setear unos recursos límites de tiempo por llamada al mimimax, y cuando se ejecute el algoritmo sobre nodos ya conocidos, usar los recursos para ampliar el árbol por esas ramas.
+
 --------------
 
 ## Tensorflow
