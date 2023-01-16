@@ -4,7 +4,7 @@ A peacefull tree-search optimizer chess engine to learn and find the right pace 
 
 ## CURRRENTLY WORKING
 ### MINIMAX
-Algoritmo para recorrer estrategias de forma alternativa para ambos escenarios en árboles binarios de decisión. Info: https://en.wikipedia.org/wiki/Minimax
+Algoritmo para recorrer estrategias de forma alternativa para ambos jugadores en árboles binarios de decisión. Info: https://en.wikipedia.org/wiki/Minimax
 
     
       -> si nodo.terminal or depth == 0:
