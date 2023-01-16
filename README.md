@@ -68,10 +68,10 @@ Cuando estamos realizando una trayectoria del árbol, el nodo hijo que retorna e
 
 Donde:
 
-<img src="https://latex.codecogs.com/gif.latex?S_i=\text=value of a node" /> 
-<img src="https://latex.codecogs.com/gif.latex?x_i=\text=empirical mean value of a node" />
-<img src="https://latex.codecogs.com/gif.latex?C=\text=constat" />
-<img src="https://latex.codecogs.com/gif.latex?t=\text=number of sims" />
+<img src="https://latex.codecogs.com/gif.latex?S_i=\text{Value of a node}" /> 
+<img src="https://latex.codecogs.com/gif.latex?x_i=\tex{empirical mean value of a node}" />
+<img src="https://latex.codecogs.com/gif.latex?C=\text{constant}" />
+<img src="https://latex.codecogs.com/gif.latex?t=\text{number of sims}" />
 
 
 
