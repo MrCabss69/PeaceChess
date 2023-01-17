@@ -60,6 +60,8 @@ https://www.chessprogramming.org/Transposition_Table#How_it_works
 
 ## TODO: 
 
+### ACTUALIZAR EL BIT DE WHITE/BLACK CAN CASTLE CON LAS FUNCIONES INTERNAS DE CHESSBOARD AL LLAMAR AL HASH
+
 ### Aperturas
 
 Mirar si estamos dentro de la teoría una apertura e ir calculando para nuestra BDD (o tabla de transposiciones) como castigar mejor cada movimiento o desviación del oponente.
