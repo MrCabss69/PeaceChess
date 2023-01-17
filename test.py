@@ -17,8 +17,8 @@ C = 100_000
 # engine = Engine()
 
 f    = '8/5R2/6p1/4p1kp/6P1/p5K1/1b5P/8 w - - 0 42'
-m, _ = Engine().get_move(chess.Board(f), 4)
-print(m.uci())
+m = Engine().get_move(chess.Board(f))
+print(m.move.uci())
 print('Tiempo de ejecución: ', str(time.time()-ts))
 
 
