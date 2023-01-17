@@ -3,6 +3,8 @@ A peacefull tree-search optimizer chess engine to learn and find the right pace 
 
 
 ## CURRRENTLY WORKING
+![alt text](https://github.com/MrCabss69/PeaceChess/blob/main/resources/engine_example.png)
+
 ### MINIMAX
 Algoritmo para recorrer estrategias de forma alternativa para ambos jugadores en árboles binarios de decisión. Info: https://en.wikipedia.org/wiki/Minimax
 
