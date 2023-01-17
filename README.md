@@ -2,7 +2,7 @@
 A peacefull tree-search optimizer chess engine to learn and find the right pace into the board. In the future the evaluation will be calculated via TensorFlow model
 
 
-## CURRRENTLY WORKING
+## CURRRENTLY FULLY WORKING
 ![alt text](https://github.com/MrCabss69/PeaceChess/blob/main/resources/engine_example.png)
 
 ### MINIMAX
@@ -44,17 +44,6 @@ Algoritmo para recorrer estrategias de forma alternativa para ambos jugadores en
                     return value
 Info: https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 
-
---------------
-
-## TODO: 
-
-### Aperturas
-
-Mirar si estamos dentro de la teoría una apertura e ir calculando para nuestra BDD (o tabla de transposiciones) como castigar mejor cada movimiento o desviación del oponente.
-
-
-
 ### Zoobrist Hashing: 
 
 https://en.wikipedia.org/wiki/Zobrist_hashing
@@ -65,6 +54,16 @@ https://en.wikipedia.org/wiki/Zobrist_hashing
 
 Usar el hash zoobrist para almacenar una tabla de transposiciones y optimizar el orden de jugadas.
 https://www.chessprogramming.org/Transposition_Table#How_it_works
+
+
+--------------
+
+## TODO: 
+
+### Aperturas
+
+Mirar si estamos dentro de la teoría una apertura e ir calculando para nuestra BDD (o tabla de transposiciones) como castigar mejor cada movimiento o desviación del oponente.
+
 
 
 ### Optimizar exploración de nodos hijos - política de selección
