@@ -81,23 +81,6 @@ Lo ideal sería setear unos recursos límites de tiempo por llamada al mimimax, 
 
 --------------
 
-## Tensorflow
-
-** Añadir como variables o capas: casillas controladas[movimientos legales], casillas abiertas del rey, peones conectados, estructuras de peones,  posibilidad de enroque, jaques, capturas, amenazas y desventaja de material
-
-
-- Generar datos filtrados y normalizadoa con su valor real correspondiente. Datos trabajados en un formato adecuado para el modelo.
-
-- Separar los datos en conjunto de entrenamiento, conjunto de prueba, y conjunto de validación.
-
-- El objetivo será evaluar númericamente una posición. ( -inf , inf ) En el fondo lo que estamos construyendo es una función heurística de precisión sobre la que aplicar el minimax.
-
-- A futuro: utilizar como parámetros el ELO de los oponentes. Se puede elegir un modelo distinto en base al elo estimado del oponente.
-
-- Formato para nuestros datos: cada input de entrada será un array n-dimensional (¿habrá que aplanarlo?). En este array estarám reflejados por capas todos los datos que describan de la forma más exhaustiva posible la situación actual. Dicho array representará una posición válida o terminal. Cada fila o capa podrá tener un tamaño diferente, siendo el tamaño último (X,8,8),
-
---------------
-
 ## MCTS 
 - Selection - Expansion - Simulation - Backpropagation
 
@@ -142,3 +125,22 @@ Donde:
                   simulation_result = rollout(leaf)
                   backpropagate(leaf, simulation_result)
           return best_child(root)
+
+
+
+--------------
+
+## Tensorflow
+
+** Añadir como variables o capas: casillas controladas[movimientos legales], casillas abiertas del rey, peones conectados, estructuras de peones,  posibilidad de enroque, jaques, capturas, amenazas y desventaja de material
+
+
+- Generar datos filtrados y normalizadoa con su valor real correspondiente. Datos trabajados en un formato adecuado para el modelo.
+
+- Separar los datos en conjunto de entrenamiento, conjunto de prueba, y conjunto de validación.
+
+- El objetivo será evaluar númericamente una posición. ( -inf , inf ) En el fondo lo que estamos construyendo es una función heurística de precisión sobre la que aplicar el minimax.
+
+- A futuro: utilizar como parámetros el ELO de los oponentes. Se puede elegir un modelo distinto en base al elo estimado del oponente.
+
+- Formato para nuestros datos: cada input de entrada será un array n-dimensional (¿habrá que aplanarlo?). En este array estarám reflejados por capas todos los datos que describan de la forma más exhaustiva posible la situación actual. Dicho array representará una posición válida o terminal. Cada fila o capa podrá tener un tamaño diferente, siendo el tamaño último (X,8,8),
