@@ -2,9 +2,7 @@
 
 # IMPORTS
 from engine import Engine
-import pandas as pd
-import random
-import copy
+import chess
 import time
 
 
@@ -12,28 +10,22 @@ import time
 
 # victory heuristic value
 C = 100_000
+
 # timestamp
 ts = time.time()
 
-"""
-def get_openings():
-    df = pd.read_csv('./resources/openings.csv',index_col=0)
-    df = df.loc[:, ['moves']]
-    df = df.applymap(lambda x: x.split(" "))
-    print(df)
-get_openings()
-"""
-
-       
-engine = Engine()
+DEPTH = 3
+engine, reinicios = Engine(), 0
 nodos_terminales, posCont, v = {}, 0, -1 
-while abs(v) > 0.9*C: 
+while abs(v) != C: 
+    reinicios += 1
     rand_board = engine.get_random_board(100)
     while rand_board.outcome() != None:
+        reinicios += 1
         rand_board = engine.get_random_board(100)
-    m, v  = engine.get_move(rand_board, 3)
-    if abs(v) > 0.9*C:
-        post_board = copy.deepcopy(rand_board)
+    m, v  = engine.get_move(rand_board, DEPTH)
+    if abs(v) == C:
+        post_board = chess.Board(rand_board.fen())
         post_board.push(m)
         break
 
@@ -42,4 +34,5 @@ print('Board escogido: ', '\n', rand_board, '\n')
 print('Fen inicial: ', rand_board.fen(), '\n')
 print('Movimiento escogido: ', m, '\n')
 print('Numero de posiciones recorridas: ', engine.posCont, '\n')
+print('Veces que se ha reinciado el board: ',reinicios)
 print('Tiempo de ejecución: ', str(time.time()-ts))

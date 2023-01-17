@@ -1,5 +1,6 @@
 import chess
 import random
+import signal
 from stockfish import Stockfish
 
 
@@ -12,9 +13,7 @@ class Engine():
         self.posCont = 0
 
     # get_random_board -> devuelve una posición aleatoria de un tablero de ajedrez
-    def get_random_board(self, n_moves=None):
-        if n_moves == None:
-            n_moves = random.randint(100, 125)
+    def get_random_board(self, n_moves=100):
         board = chess.Board()
         while n_moves > 0 and not board.is_game_over():
             choosen = random.choice(list(board.legal_moves))
@@ -77,7 +76,7 @@ class Engine():
         ov = self.heuristic_value(board)
         
         board.push(move)
-        if not board.is_valid():
+        if not board.is_valid() or move is None:
             return -100
         # aplicar heurística de jaques 
         if board.is_check():
@@ -98,7 +97,7 @@ class Engine():
 
     def get_childs(self, board):
 
-        to_explore = list(board.legal_moves)
+        to_explore = list(board.legal_moves) 
         to_explore.sort(key=lambda x: self.rate_move(board,x))
         moves = []
         # hijos = []
@@ -114,8 +113,7 @@ class Engine():
     def minimax_ab(self, board, depth, maximize, alfa, beta):
         self.posCont += 1
         # check terminal o maxima alcanzada del minimax por ahora
-        if board.is_game_over() or depth == 0 or board.fen in self.ter.keys():
-
+        if depth == 0 or board.fen in self.ter.keys() or board.is_game_over():
             if board.fen() not in self.ter.keys():
                 self.ter[board.fen()] = self.heuristic_value(board)
                 # self.nodos[node.fen] = self.stockfish_value(node)[1]
@@ -163,12 +161,16 @@ class Engine():
         best_val = -100_000 if maximize else 100_000
 
         # recorremos los hijos del nodo actual
-        for m in board.legal_moves:
-            board.push(m)
-            mmval = self.minimax_ab(
-                board, depth, not maximize, -100_000, 100_000)
-            # si es un nodo mejor que el actual
-            if eval(str(best_val)+comparator+str(mmval)) == True:
-                best_val, best_move = mmval, m
-            board.pop()
-        return best_move, best_val
+        try:
+            for m in board.legal_moves:
+                board.push(m)
+                mmval = self.minimax_ab(
+                    board, depth, not maximize, -100_000, 100_000)
+                board.pop()
+                # si es un nodo mejor que el actual
+                if eval(str(best_val)+comparator+str(mmval)) == True:
+                    best_val, best_move = mmval, m
+                
+            return best_move, best_val
+        except:
+            return best_move, best_val
