@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
-
 # from stockfish import Stockfish
 from tabla import Tabla, BestMove
 import time
@@ -35,6 +33,7 @@ def zoibrist_hash(table, board):
 
 class Engine():
 
+
     # constructor
     def __init__(self, depth=3) -> None:
         # self.eng = Stockfish()
@@ -43,8 +42,9 @@ class Engine():
         self.tabla = Tabla()
         self.d = {}
 
-    # get_material_v -> devuelve como valor numérico el desequilibrio material
 
+
+    # get_material_v -> devuelve como valor numérico el desequilibrio material
     def get_material_v(self, board):
         v = 0
         for i in range(64):
@@ -57,8 +57,9 @@ class Engine():
                     v -= piece_value
         return v
 
-    # heuristic_value -> devuelve un valor heurístico para un nodo dado
 
+
+    # heuristic_value -> devuelve un valor heurístico para un nodo dado
     def heuristic_value(self, board):
         # tablero terminal
         if board.is_game_over():
@@ -71,8 +72,9 @@ class Engine():
         else:
             return self.get_material_v(board)
 
-    # rate_move -> devuelve un valor de cuán bueno es un movimiento 'a primeras'
 
+
+    # rate_move -> devuelve un valor de cuán bueno es un movimiento 'a primeras'
     def rate_move(self, board, move):
 
         # guardamos el valor antes del movimiento
@@ -109,6 +111,8 @@ class Engine():
         board.pop()
         return v
 
+
+
     def get_childs(self, board):
         to_explore = list(board.legal_moves)
         # no te olvides del reverse = True, melón
@@ -125,8 +129,9 @@ class Engine():
             board.pop()
         return moves
 
-    # alfa-beta prunning + memoization - LONG + "FAST" VERSION
 
+
+    # alfa-beta prunning + memoization - LONG + "FAST" VERSION
     def minimax_ab(self, board, depth, maxim, alfa, beta, moves=[]):
 
         self.posCont += 1
@@ -138,42 +143,57 @@ class Engine():
         anterior = None
 
         if maxim:
+            
             # estamos maximizando - actualizamos alfa
-            act = -100_000
-
+            v_act = -100_000
+            
             for f in self.get_childs(board):
+                
+                # chorrada para evitar referencias 
+                v_ant = v_act + 0 
+                
                 board.push(f)
-                act2 = act - 1 + 1  # chorrada para evitar copia directa
-                act = max(act, self.minimax_ab(
+                v_act = max(v_act, self.minimax_ab(
                     board, depth-1, False, alfa, beta))
-                if anterior == None or act > act2:
-                    anterior = f
-                    self.d[hash] = BestMove(anterior, act, depth)
                 board.pop()
+                
+                 # si hemos actualizado el valor para el nodo
+                # => store into hash_dict
+                if anterior == None or v_act != v_ant:
+                    anterior = f
+                    self.d[hash] = BestMove(anterior, v_act, depth)
+                
                 # cortamos cuando nuestro valor_a_maximizar sea mayor que el del minimizador
                 # el adversario (mimizador) siempre escogera el menor en su turno
-                if act >= beta:
+                if v_act >= beta:
                     break
-                alfa = max(alfa, act)
-            return act
+                
+                alfa = max(alfa, v_act)
         else:
             # estamos minimizando - actualizamos alfa
-            act = 100_000
+            v_act = 100_000
             for f in self.get_childs(board):
+                # chorrada para evitar referencias 
+                v_ant = v_act + 0
                 board.push(f)
-                act2 = act - 1 + 1
-                act = min(act, self.minimax_ab(
+                v_act = min(v_act, self.minimax_ab(
                     board, depth-1, True, alfa, beta))
-                if anterior == None or act < act2:
+                board.pop()
+                # si hemos actualizado el valor para el nodo
+                # => store into hash_dict
+                if anterior == None or v_act != v_ant:
                     anterior = f
-                    self.d[hash] = BestMove(anterior, act, depth)
+                    self.d[hash] = BestMove(anterior, v_act, depth)
+                    
                 # cortamos cuando nuestro valor_a_minimizar sea menor que el del adversario
                 # él como maximizador siempre escogera el mayor de los valores en su turno
-                board.pop()
-                if act <= alfa:
+                
+                if v_act <= alfa:
                     break
-                beta = min(beta, act)
-        return act
+                beta = min(beta, v_act)
+        return v_act
+
+
 
     def get_move(self, board):
 
@@ -195,9 +215,11 @@ class Engine():
 
         return self.d[hash]
 
+
     def solve_position(self, fen, max_d):
         self.depth = max_d
         return self.get_move(chess.Board(fen))
+
 
     # get_random_board -> devuelve una posición aleatoria de un tablero de ajedrez
     def get_random_board(self, n_moves=100):
@@ -231,26 +253,35 @@ class Engine():
 
 
 # EJEMPLOS - solo cuando se ejecute directamnte engine.py
-
-if __name__ == "main":
+if __name__ == "__main__":
 
     # Example 1 - solve a forced mate in 2
     t = time.time()
     eng = Engine()
     fen = '8/5p2/7k/p1p3Rp/1pPr1q2/1P1P3R/P3r3/1K6 w - - 0 49'
+    board = chess.Board(fen)
+    print('Board en el que encontrar el mate','\n',board)
+    
     bm = eng.solve_position(fen, 3)
+    board.push(bm.move)
+    print('Tiempo usado para resolver la posición:',time.time()-t)
+    print('Comienzo del patrón de mate: ',bm.move.uci(),'\n', board)
     print(bm)
     print(len(eng.d.keys()))
-    print(time.time()-t)
+    
 
-
+    print()
+    print()
     # Example 2 - playing 5 turns exploring moves for both players
+    t = time.time()
     e = Engine(3)
     b = chess.Board()
-    cont = 10
+    cont = 5
+    print('Simulando partida..')
     while cont > 0 and b.is_valid() and not b.is_game_over():
+        print('Movimiento ', 4-cont)
         print(b, '\n', '\n')
-        print('Turno de negras:', b.turn == chess.BLACK)
+        #print('Turno de negras:', b.turn == chess.BLACK)
         bm = e.get_move(b).move
         b.push(bm)
         cont -= 1
