@@ -86,6 +86,13 @@ Ejemplos de mejora heurística para capturas: política MVL-LVP. Most Valuable P
 
 
 
+### Implementación
+La idea (como la mía original sin saber que existía) es usar tablas de posiciones con almacenando las evaluaciones anteriores, la profundidad a la que fueron hechas y las conclusiones de dichas evaluaciones. 
+
+Lo ideal sería setear unos recursos límites de tiempo por llamada al mimimax, y cuando se ejecute el algoritmo sobre nodos ya conocidos, usar los recursos para ampliar el árbol por esas ramas.
+
+
+
 ### GUI
 
 Printear tiempo de ejecución por evaluación de jugada 
@@ -93,11 +100,6 @@ Printear tiempo de ejecución por evaluación de jugada
 Comprobar que los movimientos son válidos y el tablero también. Forzar al ordenador a calcular una línea de movimientos en el tablero actual.
 
 
-
-### Implementación
-La idea (como la mía original sin saber que existía) es usar tablas de posiciones con almacenando las evaluaciones anteriores, la profundidad a la que fueron hechas y las conclusiones de dichas evaluaciones. 
-
-Lo ideal sería setear unos recursos límites de tiempo por llamada al mimimax, y cuando se ejecute el algoritmo sobre nodos ya conocidos, usar los recursos para ampliar el árbol por esas ramas.
 
 --------------
 
