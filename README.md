@@ -66,6 +66,9 @@ https://www.chessprogramming.org/Transposition_Table#How_it_works
 
 Mirar si estamos dentro de la teoría una apertura e ir calculando para nuestra BDD (o tabla de transposiciones) como castigar mejor cada movimiento o desviación del oponente.
 
+
+
+
 ### Finales
 
 Tablas de transposicion de finales
@@ -80,6 +83,15 @@ Optimizar los nodos hijos que se recorren primero para explorar en el algoritmo 
 
 
 Ejemplos de mejora heurística para capturas: política MVL-LVP. Most Valuable Piece - (eaten by) - Less Valuable Piece
+
+
+
+### GUI
+
+Printear tiempo de ejecución por evaluación de jugada 
+
+Comprobar que los movimientos son válidos y el tablero también. Forzar al ordenador a calcular una línea de movimientos en el tablero actual.
+
 
 
 ### Implementación
