@@ -66,6 +66,12 @@ https://www.chessprogramming.org/Transposition_Table#How_it_works
 
 Mirar si estamos dentro de la teoría una apertura e ir calculando para nuestra BDD (o tabla de transposiciones) como castigar mejor cada movimiento o desviación del oponente.
 
+### Finales
+
+Tablas de transposicion de finales
+
+### Distancia Hamming entre 2 boards
+
 
 
 ### Optimizar exploración de nodos hijos - política de selección
