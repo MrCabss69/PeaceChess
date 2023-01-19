@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-
-# from stockfish import Stockfish
-from tabla import Tabla, BestMove
 import time
 import chess
 import random
 random.seed(10)
+
+from tabla import Tabla, BestMove
+tabla = Tabla()
 
 
 indices = ['P', 'R', 'N', 'B', 'Q', 'K']
@@ -30,18 +30,20 @@ def zoibrist_hash(table, board):
     return h
 
 
+def fn(x,m): return max(x[0],x[1]) if m else min(x[0],x[1])
+
 
 class Engine():
+    
+    global fn, tabla
 
 
     # constructor
     def __init__(self, depth=3) -> None:
         # self.eng = Stockfish()
+        self.tabla = tabla
         self.depth = depth
-        self.posCont = 0
-        self.tabla = Tabla()
         self.d = {}
-
 
 
     # get_material_v -> devuelve como valor numérico el desequilibrio material
@@ -58,7 +60,6 @@ class Engine():
         return v
 
 
-
     # heuristic_value -> devuelve un valor heurístico para un nodo dado
     def heuristic_value(self, board):
         # tablero terminal
@@ -73,34 +74,38 @@ class Engine():
             return self.get_material_v(board)
 
 
-
     # rate_move -> devuelve un valor de cuán bueno es un movimiento 'a primeras'
-    def rate_move(self, board, move):
+    def rate_move(self, board, move, depth):
 
-        # guardamos el valor antes del movimiento
-        v = 0.
-        ov = self.heuristic_value(board)
-
+        # calculate the hash
+        hash = zoibrist_hash(self.tabla, board)
+        if hash in self.d.keys() and self.d[hash].depth >= depth:
+          # mejor hijo precalculado - recorrerlo este hijo sí o sí
+          return 99_000 
+      
         # hacemos el movimiento
         board.push(move)
 
-        # aplicar heurística de material
-
+        v = 0.
+        ov = self.heuristic_value(board)
+        
         # aplicar heurística de jaques
         if board.is_check():
             v += 1.5
 
-        # aplicar heurística de capturas
+
+        # aplicar heurística de material + capturas
         # TODO: REFACTOR - PSEUDO MVP-LVP
+        
         nv = self.heuristic_value(board)
         piece_moved = board.piece_at(move.from_square)
         if piece_moved:
-            piece_moved_val = chess.PIECE_TYPES[piece_moved.piece_type-1]
+            piece_v = chess.PIECE_TYPES[piece_moved.piece_type-1]
             if nv > ov:
                 # cuanto más vale la pieza que captura, menos vale la captura
-                v += abs(nv-ov) * (1 / piece_moved_val)
+                v += abs(nv-ov) * (1 / piece_v)
             elif nv < ov:
-                v -= abs(nv-ov) * (1 / piece_moved_val)
+                v -= abs(nv-ov) * (1 / piece_v)
 
         # aplicar heuristica de control de casillas
         #     - libres
@@ -111,17 +116,25 @@ class Engine():
         board.pop()
         return v
 
-
-
-    def get_childs(self, board):
-        to_explore = list(board.legal_moves)
-        # no te olvides del reverse = True, melón
-        to_explore.sort(key=lambda x: self.rate_move(board, x), reverse=True)
-        moves = []
+    
+    # get_childs -> devuelve los nodos hijos ordenados
+    def get_childs(self, board, depth):
+        
+        # hash de la posición
         hash = zoibrist_hash(self.tabla, board)
+        
+        # no te olvides del reverse = True, melón
+        to_explore = list(board.legal_moves).sort(key=lambda x: self.rate_move(board, x,depth), reverse=True)
+        
+        # comprobamos si ya tenemos la evaluación
         if hash in self.d.keys() and self.d[hash] != None:
-            moves.append(self.d[hash].move)
-
+            if self.d[hash].depth >= depth:
+                return [self.d[hash].move]
+            moves = [ self.d[hash].move ]
+        else: 
+            moves = []
+        
+        # añadimos los hijos en orden de exploración
         for m in to_explore:
             board.push(m)
             if board.is_valid():
@@ -134,89 +147,67 @@ class Engine():
     # alfa-beta prunning + memoization - LONG + "FAST" VERSION
     def minimax_ab(self, board, depth, maxim, alfa, beta, moves=[]):
 
-        self.posCont += 1
-
+        # check si fin de evaluación o nodo terminal
         if depth == 0 or board.is_game_over():
             return self.heuristic_value(board)
 
         hash = zoibrist_hash(self.tabla, board)
+        
+        # check si el nodo está en las tablas Zoibrist
+        if hash in self.d.keys() and self.d[hash].depth >= depth:
+          return self.d[hash].val
+        
+        v_act    = -100_000 if maxim else 100_000
         anterior = None
-
-        if maxim:
-            
-            # estamos maximizando - actualizamos alfa
-            v_act = -100_000
-            
-            for f in self.get_childs(board):
-                
-                # chorrada para evitar referencias 
-                v_ant = v_act + 0 
-                
-                board.push(f)
-                v_act = max(v_act, self.minimax_ab(
-                    board, depth-1, False, alfa, beta))
-                board.pop()
-                
-                 # si hemos actualizado el valor para el nodo
-                # => store into hash_dict
-                if anterior == None or v_act != v_ant:
-                    anterior = f
-                    self.d[hash] = BestMove(anterior, v_act, depth)
-                
-                # cortamos cuando nuestro valor_a_maximizar sea mayor que el del minimizador
-                # el adversario (mimizador) siempre escogera el menor en su turno
-                if v_act >= beta:
-                    break
-                
-                alfa = max(alfa, v_act)
-        else:
-            # estamos minimizando - actualizamos alfa
-            v_act = 100_000
-            for f in self.get_childs(board):
-                # chorrada para evitar referencias 
-                v_ant = v_act + 0
-                board.push(f)
-                v_act = min(v_act, self.minimax_ab(
-                    board, depth-1, True, alfa, beta))
-                board.pop()
-                # si hemos actualizado el valor para el nodo
-                # => store into hash_dict
-                if anterior == None or v_act != v_ant:
-                    anterior = f
-                    self.d[hash] = BestMove(anterior, v_act, depth)
-                    
-                # cortamos cuando nuestro valor_a_minimizar sea menor que el del adversario
-                # él como maximizador siempre escogera el mayor de los valores en su turno
-                
-                if v_act <= alfa:
-                    break
-                beta = min(beta, v_act)
+        
+        # exploramos la rama
+        for f in self.get_childs(board,depth):
+          v_ant = v_act + 0 
+          board.push(f)
+          v_act = fn( [ v_act, self.minimax_ab(board, depth-1, False if maxim else True, alfa, beta) ] , maxim)
+          board.pop()
+          # si hemos actualizado el valor para el nodo
+          # => store into hash_dict
+          if anterior == None or v_act != v_ant:
+            anterior = f
+            self.d[hash] = BestMove(anterior, v_act, depth)
+          if maxim:
+            # cortamos cuando nuestro valor_a_maximizar sea mayor que el del minimizador
+            # el adversario (mimizador) siempre escogera el menor en su turno
+            if v_act >= beta: break
+            alfa = max(alfa, v_act)
+          else:
+            # cortamos cuando nuestro valor_a_minimizar sea menor que el del adversario
+            # él como maximizador siempre escogera el mayor de los valores en su turno
+            if v_act <= alfa: break
+            beta = min(beta, v_act)
         return v_act
 
 
-
+    # get_move -> devuelve un movimiento en un board en base a la busqueda
     def get_move(self, board):
 
         # TABLA DE TRANSPOSICIONES - ZOIBRIST HASHING
         hash = zoibrist_hash(self.tabla, board)
 
+        # si la entrada no está o tiene menor profunidad - se recalcula la rama
         if not hash in self.d.keys() or self.d[hash].depth < self.depth:
-            maxim = board.turn == chess.WHITE
-            best_v = -100_000 if maxim else 100_000
-            best_m = None
-            for m in self.get_childs(board):
+            maxim          = board.turn == chess.WHITE
+            best_v, best_m = (-100_000 if maxim else 100_000, None)
+            for m in self.get_childs(board, self.depth):
                 board.push(m)
-                val = self.minimax_ab(
-                    board, self.depth, not maxim, -100_000, 100_000)
+                val = self.minimax_ab(board, self.depth, not maxim, -100_000, 100_000)
                 if (maxim and best_v < val) or (not maxim and best_v > val):
                     best_v, best_m = val, m
                     self.d[hash] = BestMove(best_m, best_v, self.depth)
                 board.pop()
-
+                
+        # devuelve la entrada de la tabla
         return self.d[hash]
 
 
     def solve_position(self, fen, max_d):
+        # resuelve una posición de profunidad 4 (mates, ejercicios, etc..)
         self.depth = max_d
         return self.get_move(chess.Board(fen))
 
@@ -234,21 +225,6 @@ class Engine():
 
 
 
-    # stockfish_value -> devuelve la evaluación de stockfish para un bord dado em la forma (best_move,board_eval)
-    def stockfish_value(self, board):
-
-        self.eng.set_fen_position(board.fen())
-        eval = self.eng.get_evaluation()
-        best_m = self.eng.get_best_move()
-
-        if board.is_game_over() and board.fen() not in self.ter:
-            self.ter[board.fen()] = eval
-
-        if eval["type"] == "cp":
-            return best_m, eval['value']/100
-
-        elif eval["type"] == "mate":
-            return best_m, 100_000 if eval['value'] > 0 else best_m, -100_000
 
 
 
@@ -269,7 +245,7 @@ if __name__ == "__main__":
     print(bm)
     print(len(eng.d.keys()))
     
-
+    """
     print()
     print()
     # Example 2 - playing 5 turns exploring moves for both players
@@ -287,3 +263,4 @@ if __name__ == "__main__":
         cont -= 1
     print(b,'\n')
     print('Number of stored hashes: ', len(e.d.keys()))
+    """
